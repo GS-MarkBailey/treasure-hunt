@@ -305,6 +305,10 @@ body {
   opacity: 0.85;
 }
 
+.parent-note {
+  font-size: 0.95rem;
+}
+
 .qr-panel {
   display: inline-block;
   padding: 1rem;

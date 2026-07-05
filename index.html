@@ -16,7 +16,7 @@
     <header class="hero">
       <div class="hero-badge">✨ Adventure Awaits ✨</div>
       <h1>Disney Treasure Hunt</h1>
-      <p class="hero-sub">Complete all 10 missions to unlock the secret treasure code!</p>
+      <p class="hero-sub">Complete all 10 missions to unlock the scanner and find the hidden treasure!</p>
     </header>
 
     <section class="progress-card" aria-label="Progress">
@@ -49,31 +49,31 @@
         </div>
         <h2>You found the treasure!</h2>
         <div class="treasure-mode-tabs" role="tablist" aria-label="Treasure options">
-          <button type="button" class="mode-tab active" id="mode-show-qr" role="tab" aria-selected="true" aria-controls="panel-show-qr">
-            Show QR Code
-          </button>
-          <button type="button" class="mode-tab" id="mode-scan" role="tab" aria-selected="false" aria-controls="panel-scan">
+          <button type="button" class="mode-tab active" id="mode-scan" role="tab" aria-selected="true" aria-controls="panel-scan">
             Scan with Camera
+          </button>
+          <button type="button" class="mode-tab" id="mode-show-qr" role="tab" aria-selected="false" aria-controls="panel-show-qr">
+            Create QR Code
           </button>
         </div>
 
-        <div class="treasure-mode-panel active" id="panel-show-qr" role="tabpanel" aria-labelledby="mode-show-qr">
-          <p class="treasure-message">Scan this magic code with a phone camera to reveal your prize!</p>
+        <div class="treasure-mode-panel active" id="panel-scan" role="tabpanel" aria-labelledby="mode-scan">
+          <p class="treasure-message">Find the hidden QR code and scan it with your camera!</p>
+
+          <div class="scanner-wrap">
+            <div id="qr-reader"></div>
+            <p class="scanner-status" id="scanner-status">Starting camera…</p>
+          </div>
+        </div>
+
+        <div class="treasure-mode-panel" id="panel-show-qr" role="tabpanel" aria-labelledby="mode-show-qr" hidden>
+          <p class="treasure-message parent-note">For parents: print or hide this QR code for the kids to find.</p>
 
           <div class="qr-panel">
             <canvas id="qr-canvas" aria-label="Treasure QR code"></canvas>
           </div>
 
           <p class="qr-hint" id="qr-hint"></p>
-        </div>
-
-        <div class="treasure-mode-panel" id="panel-scan" role="tabpanel" aria-labelledby="mode-scan" hidden>
-          <p class="treasure-message">Point your camera at a treasure QR code!</p>
-
-          <div class="scanner-wrap">
-            <div id="qr-reader"></div>
-            <p class="scanner-status" id="scanner-status">Switch here to start the camera.</p>
-          </div>
         </div>
       </div>
     </section>

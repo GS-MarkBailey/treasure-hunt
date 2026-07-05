@@ -33,7 +33,7 @@ const panelScan = document.getElementById("panel-scan");
 let completed = loadProgress();
 let qrGenerated = false;
 let html5QrCode = null;
-let activeMode = "show-qr";
+let activeMode = "scan";
 
 function loadProgress() {
   try {
@@ -97,14 +97,14 @@ function updateProgress() {
 function lockTreasure() {
   treasureSectionEl.classList.remove("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "true");
-  setTreasureMode("show-qr");
+  setTreasureMode("scan");
   stopScanner();
 }
 
 function unlockTreasure() {
   treasureSectionEl.classList.add("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "false");
-  setTreasureMode("show-qr");
+  setTreasureMode("scan");
 
   if (!qrGenerated) {
     generateQRCode();
@@ -116,23 +116,23 @@ function unlockTreasure() {
 
 function setTreasureMode(mode) {
   activeMode = mode;
-  const showQr = mode === "show-qr";
+  const scanning = mode === "scan";
 
-  modeShowQrBtn.classList.toggle("active", showQr);
-  modeScanBtn.classList.toggle("active", !showQr);
-  modeShowQrBtn.setAttribute("aria-selected", showQr);
-  modeScanBtn.setAttribute("aria-selected", !showQr);
+  modeScanBtn.classList.toggle("active", scanning);
+  modeShowQrBtn.classList.toggle("active", !scanning);
+  modeScanBtn.setAttribute("aria-selected", scanning);
+  modeShowQrBtn.setAttribute("aria-selected", !scanning);
 
-  panelShowQr.classList.toggle("active", showQr);
-  panelScan.classList.toggle("active", !showQr);
-  panelShowQr.hidden = !showQr;
-  panelScan.hidden = showQr;
+  panelScan.classList.toggle("active", scanning);
+  panelShowQr.classList.toggle("active", !scanning);
+  panelScan.hidden = !scanning;
+  panelShowQr.hidden = scanning;
 
-  if (showQr) {
-    stopScanner();
-    scannerStatusEl.textContent = "Switch here to start the camera.";
-  } else if (treasureSectionEl.classList.contains("unlocked")) {
+  if (scanning && treasureSectionEl.classList.contains("unlocked")) {
     startScanner();
+  } else {
+    stopScanner();
+    scannerStatusEl.textContent = "Camera paused. Switch back to scan when ready.";
   }
 }
 
@@ -176,7 +176,7 @@ async function startScanner() {
     scannerStatusEl.textContent = "Point the camera at a QR code!";
   } catch (err) {
     scannerStatusEl.textContent =
-      "Camera access denied or unavailable. Use the QR code above instead.";
+      "Camera access denied or unavailable. Allow camera access and try again.";
     html5QrCode = null;
   }
 }
@@ -196,7 +196,7 @@ function stopScanner() {
 }
 
 function onScanSuccess(decodedText) {
-  scannerStatusEl.textContent = `Found: ${decodedText}`;
+  scannerStatusEl.textContent = `Treasure found! ${decodedText}`;
   stopScanner();
 
   if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
@@ -206,8 +206,8 @@ function onScanSuccess(decodedText) {
   }
 }
 
-modeShowQrBtn.addEventListener("click", () => setTreasureMode("show-qr"));
 modeScanBtn.addEventListener("click", () => setTreasureMode("scan"));
+modeShowQrBtn.addEventListener("click", () => setTreasureMode("show-qr"));
 
 renderTasks();
 updateProgress();
