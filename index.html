@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disney Treasure Hunt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="hero">
+      <div class="hero-badge">✨ Adventure Awaits ✨</div>
+      <h1>Disney Treasure Hunt</h1>
+      <p class="hero-sub">Complete all 10 missions to unlock the secret treasure code!</p>
+    </header>
+
+    <section class="progress-card" aria-label="Progress">
+      <div class="progress-header">
+        <span class="progress-label">Missions complete</span>
+        <span class="progress-count"><span id="completed-count">0</span> / 10</span>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </section>
+
+    <section class="tasks-card">
+      <h2>Your Missions</h2>
+      <ul class="task-list" id="task-list"></ul>
+    </section>
+
+    <section class="locked-section" id="treasure-section" aria-hidden="true">
+      <div class="lock-overlay" id="lock-overlay">
+        <div class="lock-icon">🔒</div>
+        <p>Finish all missions to unlock your treasure!</p>
+      </div>
+
+      <div class="treasure-content" id="treasure-content">
+        <div class="celebration" id="celebration" aria-hidden="true">
+          <span class="confetti">🎉</span>
+          <span class="confetti">⭐</span>
+          <span class="confetti">🏆</span>
+          <span class="confetti">✨</span>
+        </div>
+        <h2>You found the treasure!</h2>
+        <p class="treasure-message">Scan this magic code with a phone camera to reveal your prize!</p>
+
+        <div class="qr-panel">
+          <canvas id="qr-canvas" aria-label="Treasure QR code"></canvas>
+        </div>
+
+        <p class="qr-hint" id="qr-hint"></p>
+
+        <details class="scanner-details">
+          <summary>Or scan a treasure QR code with this device</summary>
+          <div class="scanner-wrap">
+            <div id="qr-reader"></div>
+            <p class="scanner-status" id="scanner-status">Camera will start when you expand this section.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Made with magic for little explorers 🗺️</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
