@@ -34,6 +34,7 @@ let completed = loadProgress();
 let qrGenerated = false;
 let html5QrCode = null;
 let activeMode = "scan";
+let scanHandled = false;
 
 function loadProgress() {
   try {
@@ -158,6 +159,7 @@ function generateQRCode() {
 async function startScanner() {
   if (html5QrCode) return;
 
+  scanHandled = false;
   scannerStatusEl.textContent = "Starting camera…";
 
   html5QrCode = new Html5Qrcode("qr-reader", { verbose: false });
@@ -195,15 +197,31 @@ function stopScanner() {
     });
 }
 
+function getLinkFromScan(text) {
+  const value = text.trim();
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  if (/^www\./i.test(value)) {
+    return `https://${value}`;
+  }
+  return null;
+}
+
 function onScanSuccess(decodedText) {
-  scannerStatusEl.textContent = `Treasure found! ${decodedText}`;
+  if (scanHandled) return;
+  scanHandled = true;
+
+  const link = getLinkFromScan(decodedText);
   stopScanner();
 
-  if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
-    setTimeout(() => {
-      window.open(decodedText, "_blank", "noopener,noreferrer");
-    }, 800);
+  if (link) {
+    scannerStatusEl.textContent = "Treasure found! Opening your prize…";
+    window.location.assign(link);
+    return;
   }
+
+  scannerStatusEl.textContent = `Treasure found! ${decodedText}`;
 }
 
 modeScanBtn.addEventListener("click", () => setTreasureMode("scan"));
