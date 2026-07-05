@@ -23,8 +23,14 @@ const progressBarEl = document.querySelector(".progress-bar");
 const treasureSectionEl = document.getElementById("treasure-section");
 const treasureStatusEl = document.getElementById("treasure-status");
 const openTreasureBtn = document.getElementById("open-treasure-btn");
+const prizeRevealEl = document.getElementById("prize-reveal");
+const prizeConfettiEl = document.getElementById("prize-confetti");
+
+const PRIZE_ANIMATION_MS = 3200;
+const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
 
 let completed = loadProgress();
+let prizeOpening = false;
 
 function loadProgress() {
   try {
@@ -140,8 +146,6 @@ function openYouTubeVideo(videoId, webUrl) {
     return;
   }
 
-  treasureStatusEl.textContent = "Opening your prize in the YouTube app…";
-
   const isAndroid = /Android/i.test(navigator.userAgent);
   const appUrl = isAndroid
     ? `intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`
@@ -156,7 +160,36 @@ function openYouTubeVideo(videoId, webUrl) {
   }, 1500);
 }
 
-function openTreasureLink() {
+function spawnConfetti() {
+  prizeConfettiEl.innerHTML = "";
+
+  for (let i = 0; i < 50; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    piece.style.animationDelay = `${0.5 + Math.random() * 0.6}s`;
+    piece.style.animationDuration = `${1.8 + Math.random() * 1.2}s`;
+    prizeConfettiEl.appendChild(piece);
+  }
+}
+
+function playPrizeAnimation(onComplete) {
+  if (prizeOpening) return;
+  prizeOpening = true;
+  openTreasureBtn.disabled = true;
+
+  spawnConfetti();
+  prizeRevealEl.hidden = false;
+  prizeRevealEl.setAttribute("aria-hidden", "false");
+  prizeRevealEl.classList.add("active");
+
+  window.setTimeout(() => {
+    onComplete();
+  }, PRIZE_ANIMATION_MS);
+}
+
+function navigateToTreasure() {
   const videoId = extractYouTubeVideoId(TREASURE_LINK);
 
   if (videoId) {
@@ -164,8 +197,13 @@ function openTreasureLink() {
     return;
   }
 
-  treasureStatusEl.textContent = "Opening your prize…";
   window.location.assign(TREASURE_LINK);
+}
+
+function openTreasureLink() {
+  if (prizeOpening) return;
+
+  playPrizeAnimation(navigateToTreasure);
 }
 
 openTreasureBtn.addEventListener("click", openTreasureLink);
