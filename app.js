@@ -23,6 +23,7 @@ const completedCountEl = document.getElementById("completed-count");
 const progressFillEl = document.getElementById("progress-fill");
 const progressBarEl = document.querySelector(".progress-bar");
 const treasureSectionEl = document.getElementById("treasure-section");
+const appShellEl = document.getElementById("app-shell");
 const openTreasureBtn = document.getElementById("open-treasure-btn");
 const prizeRevealEl = document.getElementById("prize-reveal");
 const prizeConfettiEl = document.getElementById("prize-confetti");
@@ -170,10 +171,10 @@ function resetProgress() {
   prizeRevealEl.classList.remove("active");
   prizeConfettiEl.innerHTML = "";
   clearMagicWordForm();
+  appShellEl.classList.remove("treasure-mode");
 
   renderCurrentStep();
   updateProgress();
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function handleReset() {
@@ -186,15 +187,16 @@ function handleReset() {
 }
 
 function lockTreasure() {
+  appShellEl.classList.remove("treasure-mode");
   treasureSectionEl.classList.remove("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "true");
 }
 
 function unlockTreasure() {
+  appShellEl.classList.add("treasure-mode");
   treasureSectionEl.classList.add("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "false");
-  treasureSectionEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  magicWordInput.focus();
+  window.setTimeout(() => magicWordInput.focus(), 400);
 }
 
 function isMobileDevice() {

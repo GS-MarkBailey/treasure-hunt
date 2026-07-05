@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a1040" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>Disney Treasure Hunt</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,57 +12,78 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="stars" aria-hidden="true"></div>
+  <div class="scene" aria-hidden="true">
+    <div class="scene-sky"></div>
+    <div class="scene-sun"></div>
+    <div class="scene-cloud scene-cloud-1"></div>
+    <div class="scene-cloud scene-cloud-2"></div>
+    <div class="scene-cloud scene-cloud-3"></div>
+    <div class="scene-hills scene-hills-back"></div>
+    <div class="scene-hills scene-hills-front"></div>
+    <div class="scene-stars"></div>
+    <div class="scene-sparkles"></div>
+  </div>
 
-  <main class="app">
-    <header class="hero">
-      <div class="hero-badge">✨ Adventure Awaits ✨</div>
-      <h1>Disney Treasure Hunt</h1>
-      <p class="hero-sub">Complete each quest to reach the final treasure!</p>
-    </header>
-
-    <section class="progress-card" aria-label="Progress">
-      <div class="progress-header">
-        <span class="progress-label">Quest progress</span>
-        <span class="progress-count"><span id="completed-count">0</span> / 10</span>
+  <div class="app-shell" id="app-shell">
+    <header class="hud" aria-label="Progress">
+      <div class="hud-top">
+        <div class="hud-brand">
+          <span class="hud-icon">🗺️</span>
+          <span class="hud-title">Treasure Hunt</span>
+        </div>
+        <span class="hud-count"><span id="completed-count">0</span>/10</span>
       </div>
       <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
-    </section>
+    </header>
 
-    <section class="tasks-card" id="tasks-card">
-      <div class="step-header">
-        <h2 id="step-label">Quest 1</h2>
-        <span class="step-of">of 10 quests</span>
+    <main class="quest-screen" id="quest-screen">
+      <div class="quest-screen-inner">
+        <div class="hero-compact">
+          <div class="hero-badge">✨ Adventure Awaits ✨</div>
+          <h1>Disney Treasure Hunt</h1>
+        </div>
+
+        <section class="quest-panel" id="tasks-card">
+          <div class="step-header">
+            <h2 id="step-label">Quest 1</h2>
+            <span class="step-of">of 10</span>
+          </div>
+
+          <div class="step-dots" id="step-dots" aria-hidden="true"></div>
+
+          <div class="current-task" id="current-task">
+            <div class="current-task-number" id="current-task-number">1</div>
+            <p class="current-task-text" id="current-task-text"></p>
+            <button type="button" class="complete-step-btn" id="complete-step-btn">I did it! ✓</button>
+          </div>
+
+          <p class="all-done-message" id="all-done-message" hidden>You crushed every quest! 🏆</p>
+        </section>
       </div>
 
-      <div class="step-dots" id="step-dots" aria-hidden="true"></div>
+      <button type="button" class="reset-btn" id="reset-btn">Reset hunt (parents)</button>
+    </main>
 
-      <div class="current-task" id="current-task">
-        <div class="current-task-number" id="current-task-number">1</div>
-        <p class="current-task-text" id="current-task-text"></p>
-        <button type="button" class="complete-step-btn" id="complete-step-btn">I did it! ✓</button>
-      </div>
+    <section class="treasure-screen" id="treasure-section" aria-hidden="true">
+      <div class="treasure-scene-bg" aria-hidden="true"></div>
 
-      <p class="all-done-message" id="all-done-message" hidden>You crushed every quest! 🏆 Time for the treasure!</p>
-    </section>
-
-    <section class="locked-section" id="treasure-section" aria-hidden="true">
       <div class="lock-overlay" id="lock-overlay">
         <div class="lock-icon">🔒</div>
-        <p>Complete all 10 quests to unlock the treasure!</p>
+        <p>Complete all 10 quests to find the treasure!</p>
       </div>
 
       <div class="treasure-content" id="treasure-content">
-        <div class="celebration" id="celebration" aria-hidden="true">
+        <div class="celebration" aria-hidden="true">
           <span class="confetti">🎉</span>
           <span class="confetti">⭐</span>
           <span class="confetti">🏆</span>
           <span class="confetti">✨</span>
         </div>
+
         <h2>Treasure found!</h2>
-        <p class="treasure-message">One last thing… cast the secret spell to open it!</p>
+        <p class="treasure-message">Cast the secret spell to open it!</p>
 
         <form class="spell-chamber" id="magic-word-form">
           <div class="spell-chamber-glow" aria-hidden="true"></div>
@@ -92,12 +115,7 @@
         </form>
       </div>
     </section>
-  </main>
-
-  <footer class="footer">
-    <p>Made with magic for little explorers 🗺️</p>
-    <button type="button" class="reset-btn" id="reset-btn">Reset hunt (parents)</button>
-  </footer>
+  </div>
 
   <div class="prize-reveal" id="prize-reveal" hidden aria-hidden="true">
     <div class="prize-reveal-backdrop"></div>
