@@ -24,12 +24,16 @@ const progressBarEl = document.querySelector(".progress-bar");
 const treasureSectionEl = document.getElementById("treasure-section");
 const qrCanvasEl = document.getElementById("qr-canvas");
 const qrHintEl = document.getElementById("qr-hint");
-const scannerDetailsEl = document.querySelector(".scanner-details");
 const scannerStatusEl = document.getElementById("scanner-status");
+const modeShowQrBtn = document.getElementById("mode-show-qr");
+const modeScanBtn = document.getElementById("mode-scan");
+const panelShowQr = document.getElementById("panel-show-qr");
+const panelScan = document.getElementById("panel-scan");
 
 let completed = loadProgress();
 let qrGenerated = false;
 let html5QrCode = null;
+let activeMode = "show-qr";
 
 function loadProgress() {
   try {
@@ -93,12 +97,14 @@ function updateProgress() {
 function lockTreasure() {
   treasureSectionEl.classList.remove("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "true");
+  setTreasureMode("show-qr");
   stopScanner();
 }
 
 function unlockTreasure() {
   treasureSectionEl.classList.add("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "false");
+  setTreasureMode("show-qr");
 
   if (!qrGenerated) {
     generateQRCode();
@@ -106,6 +112,28 @@ function unlockTreasure() {
   }
 
   treasureSectionEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function setTreasureMode(mode) {
+  activeMode = mode;
+  const showQr = mode === "show-qr";
+
+  modeShowQrBtn.classList.toggle("active", showQr);
+  modeScanBtn.classList.toggle("active", !showQr);
+  modeShowQrBtn.setAttribute("aria-selected", showQr);
+  modeScanBtn.setAttribute("aria-selected", !showQr);
+
+  panelShowQr.classList.toggle("active", showQr);
+  panelScan.classList.toggle("active", !showQr);
+  panelShowQr.hidden = !showQr;
+  panelScan.hidden = showQr;
+
+  if (showQr) {
+    stopScanner();
+    scannerStatusEl.textContent = "Switch here to start the camera.";
+  } else if (treasureSectionEl.classList.contains("unlocked")) {
+    startScanner();
+  }
 }
 
 function generateQRCode() {
@@ -132,12 +160,16 @@ async function startScanner() {
 
   scannerStatusEl.textContent = "Starting camera…";
 
-  html5QrCode = new Html5Qrcode("qr-reader");
+  html5QrCode = new Html5Qrcode("qr-reader", { verbose: false });
 
   try {
     await html5QrCode.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 220, height: 220 } },
+      {
+        fps: 10,
+        qrbox: { width: 220, height: 220 },
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+      },
       onScanSuccess,
       () => {}
     );
@@ -174,14 +206,8 @@ function onScanSuccess(decodedText) {
   }
 }
 
-scannerDetailsEl.addEventListener("toggle", () => {
-  if (scannerDetailsEl.open && treasureSectionEl.classList.contains("unlocked")) {
-    startScanner();
-  } else {
-    stopScanner();
-    scannerStatusEl.textContent = "Camera stopped.";
-  }
-});
+modeShowQrBtn.addEventListener("click", () => setTreasureMode("show-qr"));
+modeScanBtn.addEventListener("click", () => setTreasureMode("scan"));
 
 renderTasks();
 updateProgress();
