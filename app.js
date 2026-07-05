@@ -109,55 +109,21 @@ function unlockTreasure(openLink = false) {
   }
 }
 
-function extractYouTubeVideoId(url) {
-  try {
-    const parsed = new URL(url);
-    const host = parsed.hostname.replace(/^www\./, "");
-
-    if (host === "youtu.be") {
-      return parsed.pathname.slice(1).split("/")[0] || null;
-    }
-
-    if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
-      if (parsed.pathname === "/watch") {
-        return parsed.searchParams.get("v");
-      }
-      const pathMatch = parsed.pathname.match(/^\/(embed|v|shorts)\/([^/?]+)/);
-      if (pathMatch) {
-        return pathMatch[2];
-      }
-    }
-  } catch {
-    return null;
-  }
-
-  return null;
-}
-
 function isMobileDevice() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-function openYouTubeVideo(videoId, webUrl) {
-  const fallbackUrl = webUrl || `https://www.youtube.com/watch?v=${videoId}`;
+function openTreasureFromGesture() {
+  const link = document.createElement("a");
+  link.href = TREASURE_LINK;
+  link.rel = "noopener noreferrer";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
 
-  if (!isMobileDevice()) {
-    window.location.assign(fallbackUrl);
-    return;
-  }
-
-  const isAndroid = /Android/i.test(navigator.userAgent);
-  const appUrl = isAndroid
-    ? `intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`
-    : `youtube://watch?v=${videoId}`;
-
-  window.location.assign(appUrl);
-
-  window.setTimeout(() => {
-    if (!document.hidden) {
-      window.location.assign(fallbackUrl);
-    }
-  }, 1500);
+function navigateToTreasure() {
+  window.location.assign(TREASURE_LINK);
 }
 
 function spawnConfetti() {
@@ -174,8 +140,7 @@ function spawnConfetti() {
   }
 }
 
-function playPrizeAnimation(onComplete) {
-  if (prizeOpening) return;
+function playPrizeAnimation() {
   prizeOpening = true;
   openTreasureBtn.disabled = true;
 
@@ -183,27 +148,20 @@ function playPrizeAnimation(onComplete) {
   prizeRevealEl.hidden = false;
   prizeRevealEl.setAttribute("aria-hidden", "false");
   prizeRevealEl.classList.add("active");
-
-  window.setTimeout(() => {
-    onComplete();
-  }, PRIZE_ANIMATION_MS);
-}
-
-function navigateToTreasure() {
-  const videoId = extractYouTubeVideoId(TREASURE_LINK);
-
-  if (videoId) {
-    openYouTubeVideo(videoId, TREASURE_LINK);
-    return;
-  }
-
-  window.location.assign(TREASURE_LINK);
 }
 
 function openTreasureLink() {
   if (prizeOpening) return;
 
-  playPrizeAnimation(navigateToTreasure);
+  playPrizeAnimation();
+
+  if (isMobileDevice()) {
+    // Open during the tap so phones jump straight into YouTube (no "Open in app?" prompt)
+    openTreasureFromGesture();
+    return;
+  }
+
+  window.setTimeout(navigateToTreasure, PRIZE_ANIMATION_MS);
 }
 
 openTreasureBtn.addEventListener("click", openTreasureLink);
