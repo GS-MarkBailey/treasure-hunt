@@ -16,7 +16,7 @@
     <header class="hero">
       <div class="hero-badge">✨ Adventure Awaits ✨</div>
       <h1>Disney Treasure Hunt</h1>
-      <p class="hero-sub">Complete all 10 missions to unlock your treasure!</p>
+      <p class="hero-sub">Complete each mission one at a time to unlock your treasure!</p>
     </header>
 
     <section class="progress-card" aria-label="Progress">
@@ -29,9 +29,21 @@
       </div>
     </section>
 
-    <section class="tasks-card">
-      <h2>Your Missions</h2>
-      <ul class="task-list" id="task-list"></ul>
+    <section class="tasks-card" id="tasks-card">
+      <div class="step-header">
+        <h2 id="step-label">Mission 1</h2>
+        <span class="step-of">of 10</span>
+      </div>
+
+      <div class="step-dots" id="step-dots" aria-hidden="true"></div>
+
+      <div class="current-task" id="current-task">
+        <div class="current-task-number" id="current-task-number">1</div>
+        <p class="current-task-text" id="current-task-text"></p>
+        <button type="button" class="complete-step-btn" id="complete-step-btn">Mission complete!</button>
+      </div>
+
+      <p class="all-done-message" id="all-done-message" hidden>All missions complete! 🎉</p>
     </section>
 
     <section class="locked-section" id="treasure-section" aria-hidden="true">

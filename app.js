@@ -16,15 +16,21 @@ const TASKS = [
   "Find a book and read (or look at) one page together",
 ];
 
-const taskListEl = document.getElementById("task-list");
 const completedCountEl = document.getElementById("completed-count");
 const progressFillEl = document.getElementById("progress-fill");
 const progressBarEl = document.querySelector(".progress-bar");
 const treasureSectionEl = document.getElementById("treasure-section");
-const treasureStatusEl = document.getElementById("treasure-status");
 const openTreasureBtn = document.getElementById("open-treasure-btn");
 const prizeRevealEl = document.getElementById("prize-reveal");
 const prizeConfettiEl = document.getElementById("prize-confetti");
+const tasksCardEl = document.getElementById("tasks-card");
+const stepLabelEl = document.getElementById("step-label");
+const stepDotsEl = document.getElementById("step-dots");
+const currentTaskEl = document.getElementById("current-task");
+const currentTaskNumberEl = document.getElementById("current-task-number");
+const currentTaskTextEl = document.getElementById("current-task-text");
+const completeStepBtn = document.getElementById("complete-step-btn");
+const allDoneMessageEl = document.getElementById("all-done-message");
 
 const PRIZE_ANIMATION_MS = 3200;
 const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
@@ -51,31 +57,64 @@ function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
 }
 
-function renderTasks() {
-  taskListEl.innerHTML = "";
+function getCurrentStepIndex() {
+  const index = completed.findIndex((done) => !done);
+  return index === -1 ? TASKS.length : index;
+}
 
-  TASKS.forEach((text, index) => {
-    const li = document.createElement("li");
-    li.className = "task-item" + (completed[index] ? " done" : "");
-    li.dataset.index = index;
-    li.innerHTML = `
-      <span class="task-number">${index + 1}</span>
-      <span class="task-checkbox" aria-hidden="true">${completed[index] ? "✓" : ""}</span>
-      <span class="task-text">${text}</span>
-    `;
-    li.addEventListener("click", () => toggleTask(index));
-    taskListEl.appendChild(li);
+function renderStepDots(activeIndex) {
+  stepDotsEl.innerHTML = "";
+
+  TASKS.forEach((_, index) => {
+    const dot = document.createElement("span");
+    dot.className = "step-dot";
+    if (completed[index]) {
+      dot.classList.add("done");
+    }
+    if (index === activeIndex) {
+      dot.classList.add("active");
+    }
+    stepDotsEl.appendChild(dot);
   });
 }
 
-function toggleTask(index) {
-  const wasComplete = completed.every(Boolean);
-  completed[index] = !completed[index];
-  saveProgress();
-  renderTasks();
+function renderCurrentStep() {
+  const stepIndex = getCurrentStepIndex();
+  const allDone = stepIndex >= TASKS.length;
 
-  const nowComplete = completed.every(Boolean);
-  updateProgress(!wasComplete && nowComplete);
+  if (allDone) {
+    tasksCardEl.classList.add("all-complete");
+    currentTaskEl.hidden = true;
+    allDoneMessageEl.hidden = false;
+    renderStepDots(TASKS.length);
+    return;
+  }
+
+  tasksCardEl.classList.remove("all-complete");
+  currentTaskEl.hidden = false;
+  allDoneMessageEl.hidden = true;
+
+  stepLabelEl.textContent = `Mission ${stepIndex + 1}`;
+  currentTaskNumberEl.textContent = stepIndex + 1;
+  currentTaskTextEl.textContent = TASKS[stepIndex];
+  renderStepDots(stepIndex);
+
+  currentTaskEl.classList.remove("step-enter");
+  void currentTaskEl.offsetWidth;
+  currentTaskEl.classList.add("step-enter");
+}
+
+function completeCurrentStep() {
+  const stepIndex = getCurrentStepIndex();
+  if (stepIndex >= TASKS.length) return;
+
+  const wasAllComplete = completed.every(Boolean);
+  completed[stepIndex] = true;
+  saveProgress();
+
+  const nowAllComplete = completed.every(Boolean);
+  renderCurrentStep();
+  updateProgress(!wasAllComplete && nowAllComplete);
 }
 
 function updateProgress(openLink = false) {
@@ -156,7 +195,6 @@ function openTreasureLink() {
   playPrizeAnimation();
 
   if (isMobileDevice()) {
-    // Open during the tap so phones jump straight into YouTube (no "Open in app?" prompt)
     openTreasureFromGesture();
     return;
   }
@@ -164,7 +202,8 @@ function openTreasureLink() {
   window.setTimeout(navigateToTreasure, PRIZE_ANIMATION_MS);
 }
 
+completeStepBtn.addEventListener("click", completeCurrentStep);
 openTreasureBtn.addEventListener("click", openTreasureLink);
 
-renderTasks();
+renderCurrentStep();
 updateProgress();
