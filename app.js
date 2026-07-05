@@ -208,6 +208,71 @@ function getLinkFromScan(text) {
   return null;
 }
 
+function extractYouTubeVideoId(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "");
+
+    if (host === "youtu.be") {
+      return parsed.pathname.slice(1).split("/")[0] || null;
+    }
+
+    if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
+      if (parsed.pathname === "/watch") {
+        return parsed.searchParams.get("v");
+      }
+      const pathMatch = parsed.pathname.match(/^\/(embed|v|shorts)\/([^/?]+)/);
+      if (pathMatch) {
+        return pathMatch[2];
+      }
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function openYouTubeVideo(videoId, webUrl) {
+  const fallbackUrl = webUrl || `https://www.youtube.com/watch?v=${videoId}`;
+
+  if (!isMobileDevice()) {
+    window.location.assign(fallbackUrl);
+    return;
+  }
+
+  scannerStatusEl.textContent = "Treasure found! Opening in the YouTube app…";
+
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const appUrl = isAndroid
+    ? `intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`
+    : `youtube://watch?v=${videoId}`;
+
+  window.location.assign(appUrl);
+
+  window.setTimeout(() => {
+    if (!document.hidden) {
+      window.location.assign(fallbackUrl);
+    }
+  }, 1500);
+}
+
+function openScannedLink(link) {
+  const videoId = extractYouTubeVideoId(link);
+
+  if (videoId) {
+    openYouTubeVideo(videoId, link);
+    return;
+  }
+
+  scannerStatusEl.textContent = "Treasure found! Opening your prize…";
+  window.location.assign(link);
+}
+
 function onScanSuccess(decodedText) {
   if (scanHandled) return;
   scanHandled = true;
@@ -216,8 +281,7 @@ function onScanSuccess(decodedText) {
   stopScanner();
 
   if (link) {
-    scannerStatusEl.textContent = "Treasure found! Opening your prize…";
-    window.location.assign(link);
+    openScannedLink(link);
     return;
   }
 
