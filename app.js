@@ -1,8 +1,7 @@
 const STORAGE_KEY = "disney-treasure-hunt-progress";
 
-// Customize the final prize URL or message encoded in the QR code
-const TREASURE_QR_CONTENT =
-  "Congratulations! You completed the treasure hunt! Your prize is waiting in the kitchen cupboard. 🎁"; // Change to a URL or secret message
+// Set your prize link here (YouTube videos open in the YouTube app on phones)
+const TREASURE_LINK = "https://www.youtube.com/watch?v=YOUR_VIDEO_ID"; // Replace with your YouTube link
 
 const TASKS = [
   "Find something shaped like Mickey's ears (two circles!)",
@@ -22,19 +21,10 @@ const completedCountEl = document.getElementById("completed-count");
 const progressFillEl = document.getElementById("progress-fill");
 const progressBarEl = document.querySelector(".progress-bar");
 const treasureSectionEl = document.getElementById("treasure-section");
-const qrCanvasEl = document.getElementById("qr-canvas");
-const qrHintEl = document.getElementById("qr-hint");
-const scannerStatusEl = document.getElementById("scanner-status");
-const modeShowQrBtn = document.getElementById("mode-show-qr");
-const modeScanBtn = document.getElementById("mode-scan");
-const panelShowQr = document.getElementById("panel-show-qr");
-const panelScan = document.getElementById("panel-scan");
+const treasureStatusEl = document.getElementById("treasure-status");
+const openTreasureBtn = document.getElementById("open-treasure-btn");
 
 let completed = loadProgress();
-let qrGenerated = false;
-let html5QrCode = null;
-let activeMode = "scan";
-let scanHandled = false;
 
 function loadProgress() {
   try {
@@ -73,13 +63,16 @@ function renderTasks() {
 }
 
 function toggleTask(index) {
+  const wasComplete = completed.every(Boolean);
   completed[index] = !completed[index];
   saveProgress();
   renderTasks();
-  updateProgress();
+
+  const nowComplete = completed.every(Boolean);
+  updateProgress(!wasComplete && nowComplete);
 }
 
-function updateProgress() {
+function updateProgress(openLink = false) {
   const count = completed.filter(Boolean).length;
   const total = TASKS.length;
   const pct = (count / total) * 100;
@@ -89,7 +82,7 @@ function updateProgress() {
   progressBarEl.setAttribute("aria-valuenow", count);
 
   if (count === total) {
-    unlockTreasure();
+    unlockTreasure(openLink);
   } else {
     lockTreasure();
   }
@@ -98,114 +91,16 @@ function updateProgress() {
 function lockTreasure() {
   treasureSectionEl.classList.remove("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "true");
-  setTreasureMode("scan");
-  stopScanner();
 }
 
-function unlockTreasure() {
+function unlockTreasure(openLink = false) {
   treasureSectionEl.classList.add("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "false");
-  setTreasureMode("scan");
-
-  if (!qrGenerated) {
-    generateQRCode();
-    qrGenerated = true;
-  }
-
   treasureSectionEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
 
-function setTreasureMode(mode) {
-  activeMode = mode;
-  const scanning = mode === "scan";
-
-  modeScanBtn.classList.toggle("active", scanning);
-  modeShowQrBtn.classList.toggle("active", !scanning);
-  modeScanBtn.setAttribute("aria-selected", scanning);
-  modeShowQrBtn.setAttribute("aria-selected", !scanning);
-
-  panelScan.classList.toggle("active", scanning);
-  panelShowQr.classList.toggle("active", !scanning);
-  panelScan.hidden = !scanning;
-  panelShowQr.hidden = scanning;
-
-  if (scanning && treasureSectionEl.classList.contains("unlocked")) {
-    startScanner();
-  } else {
-    stopScanner();
-    scannerStatusEl.textContent = "Camera paused. Switch back to scan when ready.";
+  if (openLink) {
+    openTreasureLink();
   }
-}
-
-function generateQRCode() {
-  QRCode.toCanvas(
-    qrCanvasEl,
-    TREASURE_QR_CONTENT,
-    {
-      width: 240,
-      margin: 2,
-      color: { dark: "#1a237e", light: "#ffffff" },
-    },
-    (err) => {
-      if (err) {
-        qrHintEl.textContent = "Could not create QR code. Please refresh the page.";
-        return;
-      }
-      qrHintEl.textContent = `Prize link: ${TREASURE_QR_CONTENT}`;
-    }
-  );
-}
-
-async function startScanner() {
-  if (html5QrCode) return;
-
-  scanHandled = false;
-  scannerStatusEl.textContent = "Starting camera…";
-
-  html5QrCode = new Html5Qrcode("qr-reader", { verbose: false });
-
-  try {
-    await html5QrCode.start(
-      { facingMode: "environment" },
-      {
-        fps: 10,
-        qrbox: { width: 220, height: 220 },
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-      },
-      onScanSuccess,
-      () => {}
-    );
-    scannerStatusEl.textContent = "Point the camera at a QR code!";
-  } catch (err) {
-    scannerStatusEl.textContent =
-      "Camera access denied or unavailable. Allow camera access and try again.";
-    html5QrCode = null;
-  }
-}
-
-function stopScanner() {
-  if (!html5QrCode) return;
-
-  html5QrCode
-    .stop()
-    .then(() => {
-      html5QrCode.clear();
-      html5QrCode = null;
-    })
-    .catch(() => {
-      html5QrCode = null;
-    });
-}
-
-function getLinkFromScan(text) {
-  const value = text.trim();
-  if (/^https?:\/\//i.test(value)) {
-    return value;
-  }
-  if (/^www\./i.test(value)) {
-    return `https://${value}`;
-  }
-  return null;
 }
 
 function extractYouTubeVideoId(url) {
@@ -245,7 +140,7 @@ function openYouTubeVideo(videoId, webUrl) {
     return;
   }
 
-  scannerStatusEl.textContent = "Treasure found! Opening in the YouTube app…";
+  treasureStatusEl.textContent = "Opening your prize in the YouTube app…";
 
   const isAndroid = /Android/i.test(navigator.userAgent);
   const appUrl = isAndroid
@@ -261,35 +156,19 @@ function openYouTubeVideo(videoId, webUrl) {
   }, 1500);
 }
 
-function openScannedLink(link) {
-  const videoId = extractYouTubeVideoId(link);
+function openTreasureLink() {
+  const videoId = extractYouTubeVideoId(TREASURE_LINK);
 
   if (videoId) {
-    openYouTubeVideo(videoId, link);
+    openYouTubeVideo(videoId, TREASURE_LINK);
     return;
   }
 
-  scannerStatusEl.textContent = "Treasure found! Opening your prize…";
-  window.location.assign(link);
+  treasureStatusEl.textContent = "Opening your prize…";
+  window.location.assign(TREASURE_LINK);
 }
 
-function onScanSuccess(decodedText) {
-  if (scanHandled) return;
-  scanHandled = true;
-
-  const link = getLinkFromScan(decodedText);
-  stopScanner();
-
-  if (link) {
-    openScannedLink(link);
-    return;
-  }
-
-  scannerStatusEl.textContent = `Treasure found! ${decodedText}`;
-}
-
-modeScanBtn.addEventListener("click", () => setTreasureMode("scan"));
-modeShowQrBtn.addEventListener("click", () => setTreasureMode("show-qr"));
+openTreasureBtn.addEventListener("click", openTreasureLink);
 
 renderTasks();
 updateProgress();
