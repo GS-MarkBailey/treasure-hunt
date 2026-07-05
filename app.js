@@ -31,6 +31,7 @@ const currentTaskNumberEl = document.getElementById("current-task-number");
 const currentTaskTextEl = document.getElementById("current-task-text");
 const completeStepBtn = document.getElementById("complete-step-btn");
 const allDoneMessageEl = document.getElementById("all-done-message");
+const resetBtn = document.getElementById("reset-btn");
 
 const PRIZE_ANIMATION_MS = 3200;
 const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
@@ -133,6 +134,31 @@ function updateProgress(openLink = false) {
   }
 }
 
+function resetProgress() {
+  completed = TASKS.map(() => false);
+  prizeOpening = false;
+  localStorage.removeItem(STORAGE_KEY);
+
+  openTreasureBtn.disabled = false;
+  prizeRevealEl.hidden = true;
+  prizeRevealEl.setAttribute("aria-hidden", "true");
+  prizeRevealEl.classList.remove("active");
+  prizeConfettiEl.innerHTML = "";
+
+  renderCurrentStep();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function handleReset() {
+  const confirmed = window.confirm(
+    "Reset all mission progress? This will start the hunt from Mission 1."
+  );
+  if (confirmed) {
+    resetProgress();
+  }
+}
+
 function lockTreasure() {
   treasureSectionEl.classList.remove("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "true");
@@ -204,6 +230,7 @@ function openTreasureLink() {
 
 completeStepBtn.addEventListener("click", completeCurrentStep);
 openTreasureBtn.addEventListener("click", openTreasureLink);
+resetBtn.addEventListener("click", handleReset);
 
 renderCurrentStep();
 updateProgress();
