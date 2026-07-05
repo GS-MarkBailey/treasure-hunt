@@ -16,12 +16,12 @@
     <header class="hero">
       <div class="hero-badge">✨ Adventure Awaits ✨</div>
       <h1>Disney Treasure Hunt</h1>
-      <p class="hero-sub">Complete each mission one at a time to unlock your treasure!</p>
+      <p class="hero-sub">Complete each quest to reach the final treasure!</p>
     </header>
 
     <section class="progress-card" aria-label="Progress">
       <div class="progress-header">
-        <span class="progress-label">Missions complete</span>
+        <span class="progress-label">Quest progress</span>
         <span class="progress-count"><span id="completed-count">0</span> / 10</span>
       </div>
       <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
@@ -31,8 +31,8 @@
 
     <section class="tasks-card" id="tasks-card">
       <div class="step-header">
-        <h2 id="step-label">Mission 1</h2>
-        <span class="step-of">of 10</span>
+        <h2 id="step-label">Quest 1</h2>
+        <span class="step-of">of 10 quests</span>
       </div>
 
       <div class="step-dots" id="step-dots" aria-hidden="true"></div>
@@ -40,16 +40,16 @@
       <div class="current-task" id="current-task">
         <div class="current-task-number" id="current-task-number">1</div>
         <p class="current-task-text" id="current-task-text"></p>
-        <button type="button" class="complete-step-btn" id="complete-step-btn">Mission complete!</button>
+        <button type="button" class="complete-step-btn" id="complete-step-btn">I did it! ✓</button>
       </div>
 
-      <p class="all-done-message" id="all-done-message" hidden>All missions complete! 🎉</p>
+      <p class="all-done-message" id="all-done-message" hidden>You crushed every quest! 🏆 Time for the treasure!</p>
     </section>
 
     <section class="locked-section" id="treasure-section" aria-hidden="true">
       <div class="lock-overlay" id="lock-overlay">
         <div class="lock-icon">🔒</div>
-        <p>Finish all missions to unlock your treasure!</p>
+        <p>Complete all 10 quests to unlock the treasure!</p>
       </div>
 
       <div class="treasure-content" id="treasure-content">
@@ -59,21 +59,36 @@
           <span class="confetti">🏆</span>
           <span class="confetti">✨</span>
         </div>
-        <h2>You found the treasure!</h2>
-        <p class="treasure-message">Whisper the magic word to claim your prize!</p>
+        <h2>Treasure found!</h2>
+        <p class="treasure-message">One last thing… cast the secret spell to open it!</p>
 
-        <form class="magic-word-form" id="magic-word-form">
-          <label class="magic-word-label" for="magic-word-input">Magic word</label>
-          <input
-            type="text"
-            id="magic-word-input"
-            class="magic-word-input"
-            autocomplete="off"
-            autocapitalize="words"
-            placeholder="Enter the magic word…"
-          />
-          <p class="magic-word-error" id="magic-word-error" hidden>That&apos;s not quite right — try again!</p>
-          <button type="submit" class="open-treasure-btn" id="open-treasure-btn">Claim your prize!</button>
+        <form class="spell-chamber" id="magic-word-form">
+          <div class="spell-chamber-glow" aria-hidden="true"></div>
+          <div class="spell-wand" aria-hidden="true">🪄</div>
+
+          <div class="spell-scroll" id="spell-scroll">
+            <span class="spell-scroll-deco" aria-hidden="true">📜</span>
+            <label class="visually-hidden" for="magic-word-input">Secret spell</label>
+            <input
+              type="text"
+              id="magic-word-input"
+              class="spell-input"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="Type the secret spell…"
+            />
+            <div class="spell-floaters" aria-hidden="true">
+              <span>✨</span><span>⭐</span><span>✨</span>
+            </div>
+          </div>
+
+          <p class="spell-oops" id="magic-word-error" hidden>🫣 That spell fizzled! Try again!</p>
+
+          <button type="submit" class="cast-spell-btn" id="open-treasure-btn">
+            <span>Cast the spell!</span>
+            <span class="cast-spell-burst" aria-hidden="true">💫</span>
+          </button>
         </form>
       </div>
     </section>

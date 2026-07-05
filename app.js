@@ -38,6 +38,7 @@ const resetBtn = document.getElementById("reset-btn");
 const magicWordForm = document.getElementById("magic-word-form");
 const magicWordInput = document.getElementById("magic-word-input");
 const magicWordError = document.getElementById("magic-word-error");
+const spellScrollEl = document.getElementById("spell-scroll");
 
 const PRIZE_ANIMATION_MS = 3200;
 const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
@@ -101,7 +102,7 @@ function renderCurrentStep() {
   currentTaskEl.hidden = false;
   allDoneMessageEl.hidden = true;
 
-  stepLabelEl.textContent = `Mission ${stepIndex + 1}`;
+  stepLabelEl.textContent = `Quest ${stepIndex + 1}`;
   currentTaskNumberEl.textContent = stepIndex + 1;
   currentTaskTextEl.textContent = TASKS[stepIndex];
   renderStepDots(stepIndex);
@@ -149,7 +150,13 @@ function isMagicWordCorrect(value) {
 function clearMagicWordForm() {
   magicWordInput.value = "";
   magicWordError.hidden = true;
-  magicWordInput.classList.remove("error");
+  spellScrollEl.classList.remove("spell-shake", "spell-error");
+}
+
+function shakeSpellScroll() {
+  spellScrollEl.classList.remove("spell-shake");
+  void spellScrollEl.offsetWidth;
+  spellScrollEl.classList.add("spell-shake", "spell-error");
 }
 
 function resetProgress() {
@@ -237,13 +244,13 @@ function handleClaimPrize(event) {
 
   if (!isMagicWordCorrect(magicWordInput.value)) {
     magicWordError.hidden = false;
-    magicWordInput.classList.add("error");
+    shakeSpellScroll();
     magicWordInput.focus();
     return;
   }
 
   magicWordError.hidden = true;
-  magicWordInput.classList.remove("error");
+  spellScrollEl.classList.remove("spell-shake", "spell-error");
   openTreasureLink();
 }
 
@@ -260,6 +267,10 @@ function openTreasureLink() {
 
 completeStepBtn.addEventListener("click", completeCurrentStep);
 magicWordForm.addEventListener("submit", handleClaimPrize);
+magicWordInput.addEventListener("input", () => {
+  magicWordError.hidden = true;
+  spellScrollEl.classList.remove("spell-error");
+});
 resetBtn.addEventListener("click", handleReset);
 
 renderCurrentStep();
