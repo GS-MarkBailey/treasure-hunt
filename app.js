@@ -4,7 +4,7 @@ const STORAGE_KEY = "disney-treasure-hunt-progress";
 const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
 
 // Magic word required before claiming the prize
-const MAGIC_WORD = "Bibbidi Bobbidi Boo";
+const MAGIC_WORD = "abracadabra";
 
 const TASKS = [
   "Find something shaped like Mickey's ears (two circles!)",
