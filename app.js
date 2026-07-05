@@ -1,7 +1,7 @@
 const STORAGE_KEY = "disney-treasure-hunt-progress";
 
 // Set your prize link here (YouTube videos open in the YouTube app on phones)
-const TREASURE_LINK = "https://www.youtube.com/watch?v=YOUR_VIDEO_ID"; // Replace with your YouTube link
+const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
 
 const TASKS = [
   "Find something shaped like Mickey's ears (two circles!)",
