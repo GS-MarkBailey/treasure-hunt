@@ -1,0 +1,6 @@
+{
+  "name": "treasure-hunt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kid-friendly treasure hunt checklist with QR code reveal"
+}
