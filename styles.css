@@ -546,7 +546,6 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 380px;
   text-align: center;
   opacity: 0;
   transform: translateY(24px) scale(0.95);
@@ -572,7 +571,7 @@ body {
   opacity: 0.9;
 }
 
-/* ── Spell chamber ── */
+/* ── Spell form (no container — sits on treasure background) ── */
 
 .visually-hidden {
   position: absolute;
@@ -586,37 +585,19 @@ body {
   border: 0;
 }
 
-.spell-chamber {
-  position: relative;
-  padding: 1.5rem 1.25rem 1.25rem;
-  border-radius: 24px;
-  background: linear-gradient(160deg, rgba(45, 27, 105, 0.9) 0%, rgba(26, 35, 126, 0.95) 50%, rgba(49, 27, 146, 0.9) 100%);
-  border: 2px solid var(--gold);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 60px rgba(245, 197, 24, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-}
-
-.spell-chamber-glow {
-  position: absolute;
-  inset: -50%;
-  background: radial-gradient(circle, rgba(245, 197, 24, 0.25) 0%, transparent 60%);
-  animation: glow-pulse 2.5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
+.spell-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
 }
 
 .spell-wand {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+  font-size: 4rem;
+  margin-bottom: 0.25rem;
   animation: wand-wiggle 2s ease-in-out infinite;
-  filter: drop-shadow(0 4px 12px rgba(245, 197, 24, 0.5));
+  filter: drop-shadow(0 4px 20px rgba(245, 197, 24, 0.6));
 }
 
 @keyframes wand-wiggle {
@@ -626,21 +607,14 @@ body {
 
 .spell-scroll {
   position: relative;
-  margin-bottom: 1rem;
-  padding: 0.85rem 1rem 0.85rem 2.75rem;
+  padding: 1rem 1.25rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, #fff8e7, #ffe082);
-  border: 2px dashed rgba(212, 160, 23, 0.5);
-  box-shadow: inset 0 2px 8px rgba(212, 160, 23, 0.15);
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, border-color 0.2s;
-}
-
-.spell-scroll-deco {
-  position: absolute;
-  left: 0.65rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
 }
 
 .spell-input {
@@ -648,11 +622,11 @@ body {
   border: none;
   background: transparent;
   font: inherit;
-  font-size: 1.15rem;
+  font-size: clamp(1.2rem, 4vw, 1.45rem);
   font-weight: 600;
-  color: var(--royal-blue);
+  color: var(--white);
   text-align: center;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .spell-input:focus {
@@ -660,7 +634,7 @@ body {
 }
 
 .spell-input::placeholder {
-  color: rgba(26, 35, 126, 0.45);
+  color: rgba(255, 255, 255, 0.45);
   font-weight: 500;
 }
 
@@ -688,8 +662,8 @@ body {
 }
 
 .spell-scroll.spell-error {
-  border-color: #ff6b6b;
-  background: linear-gradient(135deg, #fff0f0, #ffe0e0);
+  border-color: #ff8a80;
+  background: rgba(255, 82, 82, 0.15);
 }
 
 .spell-scroll.spell-shake {
