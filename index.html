@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#1a1040" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>Secret Spell</title>
+  <title>Treasure Hunt</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -13,7 +13,24 @@
 </head>
 <body>
   <div class="app-shell" id="app-shell">
-    <section class="spell-screen" id="spell-screen">
+    <section class="quest-screen" id="quest-screen">
+      <div class="quest-scene-bg" aria-hidden="true"></div>
+
+      <div class="quest-page">
+        <p class="screen-badge">🗺️ Your mission</p>
+        <h1>Find the hidden letters!</h1>
+
+        <div class="quest-icon" aria-hidden="true">🔤</div>
+
+        <p class="quest-task">
+          Go around the house and find the hidden letters — then bring them all into the living room!
+        </p>
+
+        <button type="button" class="complete-quest-btn" id="complete-quest-btn">I found them all! ✓</button>
+      </div>
+    </section>
+
+    <section class="spell-screen" id="spell-screen" hidden aria-hidden="true">
       <div class="spell-scene-bg" aria-hidden="true"></div>
 
       <div class="spell-page">
@@ -24,7 +41,7 @@
           <span class="confetti">✨</span>
         </div>
 
-        <p class="spell-badge">✨ The treasure awaits ✨</p>
+        <p class="screen-badge spell-badge">✨ The treasure awaits ✨</p>
         <h1>Cast the secret spell!</h1>
         <p class="spell-message">Type the magic word to unlock your prize</p>
 

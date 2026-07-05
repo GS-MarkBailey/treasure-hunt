@@ -1,9 +1,15 @@
+const STORAGE_KEY = "treasure-hunt-task-complete";
+
 // Set your prize link here (YouTube videos open in the YouTube app on phones)
 const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
 
 // Magic word required before claiming the prize
 const MAGIC_WORD = "abracadabra";
 
+const appShellEl = document.getElementById("app-shell");
+const questScreenEl = document.getElementById("quest-screen");
+const spellScreenEl = document.getElementById("spell-screen");
+const completeQuestBtn = document.getElementById("complete-quest-btn");
 const openTreasureBtn = document.getElementById("open-treasure-btn");
 const prizeRevealEl = document.getElementById("prize-reveal");
 const prizeConfettiEl = document.getElementById("prize-confetti");
@@ -17,6 +23,32 @@ const PRIZE_ANIMATION_MS = 3200;
 const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
 
 let prizeOpening = false;
+
+function isTaskComplete() {
+  return localStorage.getItem(STORAGE_KEY) === "true";
+}
+
+function showQuestScreen() {
+  appShellEl.classList.remove("spell-active");
+  questScreenEl.hidden = false;
+  questScreenEl.setAttribute("aria-hidden", "false");
+  spellScreenEl.hidden = true;
+  spellScreenEl.setAttribute("aria-hidden", "true");
+}
+
+function showSpellScreen() {
+  appShellEl.classList.add("spell-active");
+  questScreenEl.hidden = true;
+  questScreenEl.setAttribute("aria-hidden", "true");
+  spellScreenEl.hidden = false;
+  spellScreenEl.setAttribute("aria-hidden", "false");
+  window.setTimeout(() => magicWordInput.focus(), 300);
+}
+
+function completeQuest() {
+  localStorage.setItem(STORAGE_KEY, "true");
+  showSpellScreen();
+}
 
 function normalizeMagicWord(value) {
   return value.trim().toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ");
@@ -40,17 +72,14 @@ function shakeSpellScroll() {
 
 function resetApp() {
   prizeOpening = false;
+  localStorage.removeItem(STORAGE_KEY);
   openTreasureBtn.disabled = false;
   prizeRevealEl.hidden = true;
   prizeRevealEl.setAttribute("aria-hidden", "true");
   prizeRevealEl.classList.remove("active");
   prizeConfettiEl.innerHTML = "";
   clearSpellForm();
-  magicWordInput.focus();
-}
-
-function handleReset() {
-  resetApp();
+  showQuestScreen();
 }
 
 function isMobileDevice() {
@@ -121,11 +150,16 @@ function openTreasureLink() {
   window.setTimeout(navigateToTreasure, PRIZE_ANIMATION_MS);
 }
 
+completeQuestBtn.addEventListener("click", completeQuest);
 magicWordForm.addEventListener("submit", handleClaimPrize);
 magicWordInput.addEventListener("input", () => {
   magicWordError.hidden = true;
   spellScrollEl.classList.remove("spell-error");
 });
-resetBtn.addEventListener("click", handleReset);
+resetBtn.addEventListener("click", resetApp);
 
-magicWordInput.focus();
+if (isTaskComplete()) {
+  showSpellScreen();
+} else {
+  showQuestScreen();
+}
