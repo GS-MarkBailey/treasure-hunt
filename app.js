@@ -1,4 +1,4 @@
-const STORAGE_KEY = "disney-treasure-hunt-progress";
+const STORAGE_KEY = "treasure-hunt-progress";
 
 // Set your prize link here (YouTube videos open in the YouTube app on phones)
 const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
@@ -7,12 +7,12 @@ const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
 const MAGIC_WORD = "abracadabra";
 
 const TASKS = [
-  "Find something shaped like Mickey's ears (two circles!)",
+  "Find something made of two circles stacked on top of each other!",
   "Count 7 hidden stars around the house",
-  "Do your best royal wave like a princess or prince",
+  "Do your best royal explorer wave",
   "Find something red, blue, AND yellow",
-  "Whisper the magic words: \"Bibbidi Bobbidi Boo!\"",
-  "Hop like Tigger three times in a row",
+  "Whisper the magic word: \"abracadabra!\"",
+  "Hop on one foot three times in a row",
   "Draw a treasure map on a piece of paper",
   "Find the softest thing you can and give it a hug",
   "Make up a short song about adventure",
