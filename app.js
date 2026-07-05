@@ -3,6 +3,9 @@ const STORAGE_KEY = "disney-treasure-hunt-progress";
 // Set your prize link here (YouTube videos open in the YouTube app on phones)
 const TREASURE_LINK = "https://youtu.be/WajLDVMjgok";
 
+// Magic word required before claiming the prize
+const MAGIC_WORD = "Bibbidi Bobbidi Boo";
+
 const TASKS = [
   "Find something shaped like Mickey's ears (two circles!)",
   "Count 7 hidden stars around the house",
@@ -32,6 +35,9 @@ const currentTaskTextEl = document.getElementById("current-task-text");
 const completeStepBtn = document.getElementById("complete-step-btn");
 const allDoneMessageEl = document.getElementById("all-done-message");
 const resetBtn = document.getElementById("reset-btn");
+const magicWordForm = document.getElementById("magic-word-form");
+const magicWordInput = document.getElementById("magic-word-input");
+const magicWordError = document.getElementById("magic-word-error");
 
 const PRIZE_ANIMATION_MS = 3200;
 const CONFETTI_COLORS = ["#f5c518", "#ff6b9d", "#4fc3f7", "#7c4dff", "#ffe082", "#ffffff"];
@@ -109,16 +115,14 @@ function completeCurrentStep() {
   const stepIndex = getCurrentStepIndex();
   if (stepIndex >= TASKS.length) return;
 
-  const wasAllComplete = completed.every(Boolean);
   completed[stepIndex] = true;
   saveProgress();
 
-  const nowAllComplete = completed.every(Boolean);
   renderCurrentStep();
-  updateProgress(!wasAllComplete && nowAllComplete);
+  updateProgress();
 }
 
-function updateProgress(openLink = false) {
+function updateProgress() {
   const count = completed.filter(Boolean).length;
   const total = TASKS.length;
   const pct = (count / total) * 100;
@@ -128,10 +132,24 @@ function updateProgress(openLink = false) {
   progressBarEl.setAttribute("aria-valuenow", count);
 
   if (count === total) {
-    unlockTreasure(openLink);
+    unlockTreasure();
   } else {
     lockTreasure();
   }
+}
+
+function normalizeMagicWord(value) {
+  return value.trim().toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ");
+}
+
+function isMagicWordCorrect(value) {
+  return normalizeMagicWord(value) === normalizeMagicWord(MAGIC_WORD);
+}
+
+function clearMagicWordForm() {
+  magicWordInput.value = "";
+  magicWordError.hidden = true;
+  magicWordInput.classList.remove("error");
 }
 
 function resetProgress() {
@@ -144,6 +162,7 @@ function resetProgress() {
   prizeRevealEl.setAttribute("aria-hidden", "true");
   prizeRevealEl.classList.remove("active");
   prizeConfettiEl.innerHTML = "";
+  clearMagicWordForm();
 
   renderCurrentStep();
   updateProgress();
@@ -164,14 +183,11 @@ function lockTreasure() {
   treasureSectionEl.setAttribute("aria-hidden", "true");
 }
 
-function unlockTreasure(openLink = false) {
+function unlockTreasure() {
   treasureSectionEl.classList.add("unlocked");
   treasureSectionEl.setAttribute("aria-hidden", "false");
   treasureSectionEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-  if (openLink) {
-    openTreasureLink();
-  }
+  magicWordInput.focus();
 }
 
 function isMobileDevice() {
@@ -215,9 +231,23 @@ function playPrizeAnimation() {
   prizeRevealEl.classList.add("active");
 }
 
-function openTreasureLink() {
+function handleClaimPrize(event) {
+  event.preventDefault();
   if (prizeOpening) return;
 
+  if (!isMagicWordCorrect(magicWordInput.value)) {
+    magicWordError.hidden = false;
+    magicWordInput.classList.add("error");
+    magicWordInput.focus();
+    return;
+  }
+
+  magicWordError.hidden = true;
+  magicWordInput.classList.remove("error");
+  openTreasureLink();
+}
+
+function openTreasureLink() {
   playPrizeAnimation();
 
   if (isMobileDevice()) {
@@ -229,7 +259,7 @@ function openTreasureLink() {
 }
 
 completeStepBtn.addEventListener("click", completeCurrentStep);
-openTreasureBtn.addEventListener("click", openTreasureLink);
+magicWordForm.addEventListener("submit", handleClaimPrize);
 resetBtn.addEventListener("click", handleReset);
 
 renderCurrentStep();

@@ -60,8 +60,21 @@
           <span class="confetti">✨</span>
         </div>
         <h2>You found the treasure!</h2>
-        <p class="treasure-message" id="treasure-status">Your prize is ready — tap below if it didn&apos;t open automatically.</p>
-        <button type="button" class="open-treasure-btn" id="open-treasure-btn">Open your prize</button>
+        <p class="treasure-message">Whisper the magic word to claim your prize!</p>
+
+        <form class="magic-word-form" id="magic-word-form">
+          <label class="magic-word-label" for="magic-word-input">Magic word</label>
+          <input
+            type="text"
+            id="magic-word-input"
+            class="magic-word-input"
+            autocomplete="off"
+            autocapitalize="words"
+            placeholder="Enter the magic word…"
+          />
+          <p class="magic-word-error" id="magic-word-error" hidden>That&apos;s not quite right — try again!</p>
+          <button type="submit" class="open-treasure-btn" id="open-treasure-btn">Claim your prize!</button>
+        </form>
       </div>
     </section>
   </main>
