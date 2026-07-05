@@ -32,6 +32,7 @@
           <span class="hud-title">Treasure Hunt</span>
         </div>
         <span class="hud-count"><span id="completed-count">0</span>/10</span>
+        <button type="button" class="hud-reset-btn" id="hud-reset-btn" title="Play again">↺</button>
       </div>
       <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
         <div class="progress-fill" id="progress-fill"></div>
@@ -63,7 +64,7 @@
         </section>
       </div>
 
-      <button type="button" class="reset-btn" id="reset-btn">Reset hunt (parents)</button>
+      <button type="button" class="reset-btn" id="reset-btn">↺ Play again</button>
     </main>
 
     <section class="treasure-screen" id="treasure-section" aria-hidden="true">
@@ -113,6 +114,8 @@
             <span class="cast-spell-burst" aria-hidden="true">💫</span>
           </button>
         </form>
+
+        <button type="button" class="play-again-btn" id="treasure-reset-btn">🔄 Play again!</button>
       </div>
     </section>
   </div>

@@ -194,6 +194,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.6rem;
 }
 
@@ -214,10 +215,36 @@ body {
 }
 
 .hud-count {
+  margin-left: auto;
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--gold);
   text-shadow: 0 0 12px rgba(245, 197, 24, 0.5);
+}
+
+.hud-reset-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.hud-reset-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: rotate(-180deg);
+}
+
+.hud-reset-btn:active {
+  transform: rotate(-180deg) scale(0.92);
 }
 
 .progress-bar {
@@ -712,6 +739,32 @@ body {
 .cast-spell-btn:active {
   transform: translateY(4px);
   box-shadow: 0 2px 0 #b8860b, 0 4px 12px rgba(245, 197, 24, 0.35);
+}
+
+.play-again-btn {
+  display: block;
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.play-again-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.play-again-btn:active {
+  transform: scale(0.98);
 }
 
 .cast-spell-burst {

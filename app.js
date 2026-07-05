@@ -36,6 +36,8 @@ const currentTaskTextEl = document.getElementById("current-task-text");
 const completeStepBtn = document.getElementById("complete-step-btn");
 const allDoneMessageEl = document.getElementById("all-done-message");
 const resetBtn = document.getElementById("reset-btn");
+const hudResetBtn = document.getElementById("hud-reset-btn");
+const treasureResetBtn = document.getElementById("treasure-reset-btn");
 const magicWordForm = document.getElementById("magic-word-form");
 const magicWordInput = document.getElementById("magic-word-input");
 const magicWordError = document.getElementById("magic-word-error");
@@ -179,7 +181,7 @@ function resetProgress() {
 
 function handleReset() {
   const confirmed = window.confirm(
-    "Reset all mission progress? This will start the hunt from Mission 1."
+    "Start a brand-new treasure hunt? This clears all progress and begins at Quest 1."
   );
   if (confirmed) {
     resetProgress();
@@ -274,6 +276,8 @@ magicWordInput.addEventListener("input", () => {
   spellScrollEl.classList.remove("spell-error");
 });
 resetBtn.addEventListener("click", handleReset);
+hudResetBtn.addEventListener("click", handleReset);
+treasureResetBtn.addEventListener("click", handleReset);
 
 renderCurrentStep();
 updateProgress();
