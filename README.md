@@ -2,9 +2,15 @@
 
 A fun browser-based treasure hunt for kids with 10 missions. When all missions are complete, a secret QR code is revealed!
 
-## Live demo
+## Live site
 
-Deploy to Vercel (see below) to get a shareable link for phones and tablets.
+**https://treasure-hunt-kohl.vercel.app**
+
+## Repository
+
+**https://github.com/GS-MarkBailey/treasure-hunt**
+
+Pushes to `main` automatically redeploy on Vercel.
 
 ## Quick start (local)
 
